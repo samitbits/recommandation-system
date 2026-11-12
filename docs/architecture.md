@@ -17,7 +17,7 @@ flowchart TD
     G --> I[MLflow Tracking<br/>params + metrics + artifacts]
     D --> J[Feature Store<br/>reusable retrieval layer]
 
-    subgraph Orchestration [Prefect Flow: RecommendationPipeline]
+    subgraph Orchestration["Prefect Flow: RecommendationPipeline"]
         A
         B
         C
@@ -53,4 +53,4 @@ flowchart LR
 | Evaluation | `src/evaluation.py` | Ranking + rating metrics, comparison table |
 | Tracking | `src/mlflow_tracking.py` | MLflow params/metrics/artifacts |
 | Orchestration | `orchestration/prefect_pipeline.py` | Prefect flow wiring all stages |
-```
+
