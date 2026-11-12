@@ -1,25 +1,25 @@
+
 dataset:
-
   url: "https://files.grouplens.org/datasets/movielens/ml-100k.zip"
-
   folder: "data/raw/ml-100k"
+  download_dir: "data/raw"
 
 evaluation:
-
   top_k: 10
 
 model:
-
   n_factors: 100
   lr_all: 0.005
   reg_all: 0.02
+  random_state: 42
+
+split:
+  test_fraction: 0.2
 
 paths:
-
+  raw: "data/raw"
   processed: "data/processed"
-
   features: "data/features"
-
   reports: "reports"
-
+  errors: "data/errors"
   models: "models"

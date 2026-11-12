@@ -1,46 +1,54 @@
+#mlflow_tracking.py
 import mlflow
+
+from src.utils import load_config
+from src.utils import project_path
 
 
 class MLflowTracker:
 
-    def log_experiment(
+    def __init__(self):
 
-            self,
+        load_config()
 
-            model_name,
-
-            metrics,
-
-            params
-    ):
-
-        mlflow.set_experiment(
-
-            "RecommendationSystem"
+        mlflow.set_tracking_uri(
+            "file:" + project_path("mlruns")
         )
 
-        with mlflow.start_run():
+        mlflow.set_experiment("RecommendationSystem")
 
-            mlflow.log_param(
-                "model",
-                model_name
-            )
+    def log_model_run(
+        self,
+        model_name,
+        params,
+        metrics,
+        artifact_path=None
+    ):
 
-            for k, v in params.items():
+        with mlflow.start_run(run_name=model_name):
 
-                mlflow.log_param(
-                    k,
-                    v
-                )
+            mlflow.log_param("model", model_name)
 
-            for k, v in metrics.items():
+            for key, value in params.items():
 
-                mlflow.log_metric(
-                    k,
-                    v
-                )
+                mlflow.log_param(key, value)
 
-            print(
+            for key, value in metrics.items():
 
-                f"Experiment logged: {model_name}"
-            )
+                if value is not None:
+
+                    mlflow.log_metric(key, float(value))
+
+            if artifact_path is not None:
+
+                mlflow.log_artifact(artifact_path)
+
+        print(f"Experiment logged: {model_name}")
+
+    def log_experiment(self, model_name, params, metrics):
+
+        self.log_model_run(
+            model_name,
+            params,
+            metrics
+        )

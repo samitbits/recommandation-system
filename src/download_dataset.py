@@ -1,53 +1,47 @@
-import requests
-import zipfile
 import os
+import zipfile
+
+import requests
+
+from src.utils import load_config
+from src.utils import project_path
 
 
 def download_movielens():
 
-    url = (
-        "https://files.grouplens.org/"
-        "datasets/movielens/ml-100k.zip"
+    config = load_config()
+
+    url = config["dataset"]["url"]
+
+    output_dir = project_path(
+        config["dataset"]["download_dir"]
     )
 
-    output_dir = "data/raw"
+    os.makedirs(output_dir, exist_ok=True)
 
     zip_path = os.path.join(
         output_dir,
         "ml-100k.zip"
     )
 
-    extracted = os.path.join(
-        output_dir,
-        "ml-100k"
+    extracted = project_path(
+        config["dataset"]["folder"]
     )
 
     if os.path.exists(extracted):
 
-        print(
-            "MovieLens already downloaded."
-        )
+        print("MovieLens already downloaded.")
 
         return
 
     response = requests.get(url)
 
-    with open(
-            zip_path,
-            "wb"
-    ) as f:
+    with open(zip_path, "wb") as f:
 
         f.write(response.content)
 
-    with zipfile.ZipFile(
-            zip_path,
-            "r"
-    ) as zip_ref:
+    with zipfile.ZipFile(zip_path, "r") as zip_ref:
 
-        zip_ref.extractall(
-            output_dir
-        )
+        zip_ref.extractall(output_dir)
 
-    print(
-        "MovieLens downloaded."
-    )
+    print("MovieLens downloaded.")
