@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/samitghosh/Documents/bits-pipeline/recommandation-system/mlruns/457183428182040029/06b8c11c81c4410e956d891b64eeb326/artifacts
+end_time: 1794399779666
+entry_point_name: ''
+experiment_id: '457183428182040029'
+lifecycle_stage: active
+run_id: 06b8c11c81c4410e956d891b64eeb326
+run_name: orderly-grub-128
+run_uuid: 06b8c11c81c4410e956d891b64eeb326
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1794399779642
+status: 3
+tags: []
+user_id: samitghosh
