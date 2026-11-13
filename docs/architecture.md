@@ -4,18 +4,25 @@
 
 ```mermaid
 flowchart TD
-    A[Data Ingestion<br/>MovieLens 100K: users, items, ratings] --> B[Data Validation<br/>schemas, missing, duplicates,<br/>referential integrity]
-    B -->|clean ratings| C[Data Preparation<br/>time-based train/test split<br/>user-item matrix]
+    A["Data Ingestion<br>MovieLens 100K: users, items, ratings"] --> B["Data Validation<br>schemas, missing, duplicates,<br>referential integrity"]
+
+    B -->|clean ratings| C["Data Preparation<br>time-based train/test split<br>user-item matrix"]
     B -->|invalid/duplicate rows| E[(data/errors)]
-    C --> D[Feature Engineering<br/>user / item / interaction features<br/>+ feature catalog]
+
+    C --> D["Feature Engineering<br>user / item / interaction features<br>+ feature catalog"]
+
     D --> F[Model Training]
+
     F --> F1[Popularity Baseline]
-    F --> F2[SVD Collaborative Filtering]
-    F1 --> G[Evaluation<br/>Precision@K, Recall@K, NDCG@K,<br/>Coverage, Diversity, RMSE, MAE]
+    F --> F2["SVD Collaborative Filtering"]
+
+    F1 --> G["Evaluation<br>Precision@K, Recall@K, NDCG@K,<br>Coverage, Diversity, RMSE, MAE"]
     F2 --> G
-    G --> H[Model Comparison Table<br/>reports/model_comparison.csv]
-    G --> I[MLflow Tracking<br/>params + metrics + artifacts]
-    D --> J[Feature Store<br/>reusable retrieval layer]
+
+    G --> H["Model Comparison Table<br>reports/model_comparison.csv"]
+    G --> I["MLflow Tracking<br>params + metrics + artifacts"]
+
+    D --> J["Feature Store<br>reusable retrieval layer"]
 
     subgraph Orchestration["Prefect Flow: RecommendationPipeline"]
         A
@@ -32,14 +39,14 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    R[data/raw] --> P[data/processed<br/>train/test + matrix]
-    P --> FE[data/features<br/>user/item/interaction]
-    V[reports<br/>validation, catalog, comparison]
-    ER[data/errors<br/>invalid + duplicate records]
-    M[models<br/>popularity + svd .pkl]
-    ML[mlruns<br/>MLflow store]
-```
+    R["data/raw"] --> P["data/processed<br>train/test + matrix"]
+    P --> FE["data/features<br>user/item/interaction"]
 
+    V["reports<br>validation, catalog, comparison"]
+    ER["data/errors<br>invalid + duplicate records"]
+    M["models<br>popularity + svd.pkl"]
+    ML["mlruns<br>MLflow store"]
+```
 ## Components
 
 | Layer | Module | Responsibility |
@@ -53,4 +60,3 @@ flowchart LR
 | Evaluation | `src/evaluation.py` | Ranking + rating metrics, comparison table |
 | Tracking | `src/mlflow_tracking.py` | MLflow params/metrics/artifacts |
 | Orchestration | `orchestration/prefect_pipeline.py` | Prefect flow wiring all stages |
-
