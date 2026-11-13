@@ -1,0 +1,29 @@
+#orchestration_run.log
+.\venv\Scripts\python.exe : 18:57:45.583 | INFO    | prefect - Starting temporary server on http://127.0.0.1:8469
+At line:1 char:242
++ ...  = 0; try { .\venv\Scripts\python.exe .\orchestration\prefect_pipelin ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (18:57:45.583 | .../127.0.0.1:8469:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+See https://www.prefect.io/docs/v3/concepts/server#how-to-guides for more information on running a dedicated Prefect
+server.
+18:58:16.277 | INFO    | Flow run 'huge-mackerel' - Beginning flow run 'huge-mackerel' for flow
+'RecommendationPipeline'
+18:58:18.651 | INFO    | Task run 'setup_task-a1f' - Finished in state Completed()
+18:58:18.735 | INFO    | Task run 'ingestion_task-a80' - Finished in state Completed()
+18:58:19.013 | INFO    | Task run 'validation_task-f9e' - Finished in state Completed()
+18:58:20.660 | INFO    | Task run 'preparation_task-4e0' - Finished in state Completed()
+18:58:21.112 | INFO    | Task run 'feature_task-f6e' - Finished in state Completed()
+18:58:24.407 | INFO    | Task run 'train_models_task-6e6' - Finished in state Completed()
+18:58:28.256 | INFO    | Task run 'evaluation_task-5d4' - Finished in state Completed()
+18:58:30.570 | INFO    | Task run 'tracking_task-f79' - Finished in state Completed()
+18:58:30.642 | INFO    | Flow run 'huge-mackerel' - Finished in state Completed()
+MovieLens already downloaded.
+Validation completed.
+Features stored successfully
+Evaluation completed.
+Experiment logged: Popularity
+Experiment logged: SVD
+Prefect pipeline completed.
+18:58:30.660 | INFO    | prefect - Stopping temporary server on http://127.0.0.1:8469

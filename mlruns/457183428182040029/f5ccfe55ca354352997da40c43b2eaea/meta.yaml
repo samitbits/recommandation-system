@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/samitghosh/Documents/bits-pipeline/recommandation-system/mlruns/457183428182040029/f5ccfe55ca354352997da40c43b2eaea/artifacts
+end_time: 1794402061510
+entry_point_name: ''
+experiment_id: '457183428182040029'
+lifecycle_stage: active
+run_id: f5ccfe55ca354352997da40c43b2eaea
+run_name: fortunate-swan-583
+run_uuid: f5ccfe55ca354352997da40c43b2eaea
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1794402061483
+status: 3
+tags: []
+user_id: samitghosh

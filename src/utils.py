@@ -1,39 +1,54 @@
-import yaml
+#utils.py
+
 import os
+
+import yaml
+
+
+PROJECT_ROOT = os.path.dirname(
+    os.path.dirname(
+        os.path.abspath(__file__)
+    )
+)
+
+
+def project_path(*parts):
+    return os.path.join(PROJECT_ROOT, *parts)
+
+
+_CONFIG_CACHE = None
 
 
 def load_config():
+    global _CONFIG_CACHE
 
-    with open(
-        "config/config.yaml",
-        "r"
-    ) as f:
+    if _CONFIG_CACHE is None:
 
-        config = yaml.safe_load(f)
+        config_file = project_path(
+            "config",
+            "config.yaml"
+        )
 
-    return config
+        with open(config_file, "r") as f:
+
+            _CONFIG_CACHE = yaml.safe_load(f)
+
+    return _CONFIG_CACHE
 
 
 def ensure_directories():
+    config = load_config()
 
-    dirs = [
-
-        "data/raw",
-
-        "data/processed",
-
-        "data/features",
-
-        "data/errors",
-
+    for key in [
+        "raw",
+        "processed",
+        "features",
+        "errors",
         "reports",
-
         "models"
-    ]
-
-    for d in dirs:
+    ]:
 
         os.makedirs(
-            d,
+            project_path(config["paths"][key]),
             exist_ok=True
         )

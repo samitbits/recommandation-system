@@ -1,124 +1,179 @@
+#validation.py
+import os
+
 import pandas as pd
 import pandera as pa
-from pandera import Check
-from pandera import Column
+
+from src import schemas
+from src.utils import load_config
+from src.utils import project_path
 
 
 class DataValidator:
 
+    def __init__(self):
+
+        config = load_config()
+
+        self.errors_dir = project_path(
+            config["paths"]["errors"]
+        )
+
+        self.reports_dir = project_path(
+            config["paths"]["reports"]
+        )
+
+        os.makedirs(self.errors_dir, exist_ok=True)
+        os.makedirs(self.reports_dir, exist_ok=True)
+
     @staticmethod
-    def schema():
+    def ratings_schema():
 
-        return pa.DataFrameSchema({
+        return schemas.ratings_schema()
 
-            "user_id":
+    @staticmethod
+    def users_schema():
 
-                Column(
-                    int,
-                    Check.ge(1)
-                ),
+        return schemas.users_schema()
 
-            "movie_id":
+    @staticmethod
+    def items_schema():
 
-                Column(
-                    int,
-                    Check.ge(1)
-                ),
+        return schemas.items_schema()
 
-            "rating":
+    def _error_path(self, name):
 
-                Column(
-                    int,
+        return os.path.join(self.errors_dir, name)
 
-                    Check.in_range(
-                        1,
-                        5
-                    )
-                ),
-
-            "timestamp":
-
-                Column(
-                    int,
-                    Check.ge(1)
-                )
-        })
-
-    def validate(
-            self,
-            users,
-            items,
-            ratings
-    ):
+    def validate(self, users, items, ratings):
 
         report = []
 
+        report.append(["ratings_rows_in", len(ratings)])
         report.append([
             "missing_values",
-            ratings.isna().sum().sum()
+            int(ratings.isna().sum().sum())
         ])
 
-        report.append([
-            "duplicates",
-            ratings.duplicated().sum()
-        ])
+        duplicates = ratings[
+            ratings.duplicated(keep="first")
+        ]
 
-        try:
+        report.append(["duplicates", len(duplicates)])
 
-            self.schema().validate(
-                ratings
-            )
+        if len(duplicates) > 0:
 
-            report.append([
-                "schema_validation",
-                "PASS"
-            ])
-
-        except Exception:
-
-            report.append([
-                "schema_validation",
-                "FAIL"
-            ])
-
-            ratings.to_csv(
-                "data/errors/schema_errors.csv",
+            duplicates.to_csv(
+                self._error_path("duplicate_ratings.csv"),
                 index=False
             )
 
-        invalid_users = ratings[
-            ~ratings["user_id"].isin(
-                users["user_id"]
+        clean = ratings.drop_duplicates()
+
+        for name, schema, frame in [
+            ("users_schema", self.users_schema(), users),
+            ("items_schema", self.items_schema(), items),
+        ]:
+
+            try:
+
+                schema.validate(
+                    frame,
+                    lazy=True
+                )
+
+                report.append([name, "PASS"])
+
+            except pa.errors.SchemaErrors as exc:
+
+                report.append([name, "FAIL"])
+
+                exc.failure_cases.to_csv(
+                    self._error_path(f"{name}_errors.csv"),
+                    index=False
+                )
+
+        try:
+
+            self.ratings_schema().validate(
+                clean,
+                lazy=True
             )
+
+            report.append(["ratings_schema", "PASS"])
+
+            schema_bad_idx = set()
+
+        except pa.errors.SchemaErrors as exc:
+
+            report.append(["ratings_schema", "FAIL"])
+
+            exc.failure_cases.to_csv(
+                self._error_path("ratings_schema_errors.csv"),
+                index=False
+            )
+
+            schema_bad_idx = set(
+                exc.failure_cases["index"].dropna().astype(int)
+            )
+
+        invalid_users = clean[
+            ~clean["user_id"].isin(users["user_id"])
         ]
 
-        invalid_movies = ratings[
-            ~ratings["movie_id"].isin(
-                items["movie_id"]
-            )
+        invalid_movies = clean[
+            ~clean["movie_id"].isin(items["movie_id"])
         ]
 
-        invalid_users.to_csv(
-            "data/errors/invalid_users.csv",
-            index=False
+        report.append([
+            "orphan_user_refs",
+            len(invalid_users)
+        ])
+        report.append([
+            "orphan_movie_refs",
+            len(invalid_movies)
+        ])
+
+        if len(invalid_users) > 0:
+
+            invalid_users.to_csv(
+                self._error_path("invalid_users.csv"),
+                index=False
+            )
+
+        if len(invalid_movies) > 0:
+
+            invalid_movies.to_csv(
+                self._error_path("invalid_movies.csv"),
+                index=False
+            )
+
+        bad_ref_idx = set(invalid_users.index) | set(
+            invalid_movies.index
         )
 
-        invalid_movies.to_csv(
-            "data/errors/invalid_movies.csv",
-            index=False
+        drop_idx = bad_ref_idx | (
+            schema_bad_idx & set(clean.index)
         )
+
+        valid = clean.drop(
+            index=drop_idx,
+            errors="ignore"
+        )
+
+        report.append(["valid_rows_out", len(valid)])
 
         pd.DataFrame(
             report,
-            columns=[
-                "check",
-                "result"
-            ]
+            columns=["check", "result"]
         ).to_csv(
-            "reports/validation_report.csv",
+            os.path.join(
+                self.reports_dir,
+                "validation_report.csv"
+            ),
             index=False
         )
 
-        print(
-            "Validation completed."
-        )
+        print("Validation completed.")
+
+        return valid

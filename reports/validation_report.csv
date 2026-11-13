@@ -1,0 +1,11 @@
+#validation_report.csv
+check,result
+ratings_rows_in,100000
+missing_values,0
+duplicates,0
+users_schema,PASS
+items_schema,PASS
+ratings_schema,PASS
+orphan_user_refs,0
+orphan_movie_refs,0
+valid_rows_out,100000

@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/samitghosh/Documents/bits-pipeline/recommandation-system/mlruns/457183428182040029/1c4fd35739934f1dae8a741bd4426c82/artifacts
+end_time: 1794559826629
+entry_point_name: ''
+experiment_id: '457183428182040029'
+lifecycle_stage: active
+run_id: 1c4fd35739934f1dae8a741bd4426c82
+run_name: Popularity
+run_uuid: 1c4fd35739934f1dae8a741bd4426c82
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1794559826592
+status: 3
+tags: []
+user_id: samitghosh

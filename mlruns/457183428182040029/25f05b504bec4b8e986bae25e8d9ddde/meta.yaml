@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/samitghosh/Documents/bits-pipeline/recommandation-system/mlruns/457183428182040029/25f05b504bec4b8e986bae25e8d9ddde/artifacts
+end_time: 1794559611899
+entry_point_name: ''
+experiment_id: '457183428182040029'
+lifecycle_stage: active
+run_id: 25f05b504bec4b8e986bae25e8d9ddde
+run_name: SVD
+run_uuid: 25f05b504bec4b8e986bae25e8d9ddde
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1794559611832
+status: 3
+tags: []
+user_id: samitghosh
