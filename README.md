@@ -110,6 +110,37 @@ mlflow ui --backend-store-uri mlruns
 
 ---
 
+## Prefect Server & UI
+
+To monitor flow runs, task states, and logs in the Prefect dashboard:
+
+### 1. Start the Prefect server (Terminal 1)
+
+```powershell
+.\venv\Scripts\Activate.ps1
+prefect server start
+```
+
+Keep this terminal open. The UI is served at **http://127.0.0.1:4200**.
+
+### 2. Point the client at the server and run the flow (Terminal 2)
+
+```powershell
+.\venv\Scripts\Activate.ps1
+prefect config set PREFECT_API_URL=http://127.0.0.1:4200/api
+python .\orchestration\prefect_pipeline.py
+```
+
+### 3. View the run in the UI
+
+Open **http://127.0.0.1:4200** in a browser and go to **Runs** to view the
+`RecommendationPipeline` flow run, its 8 tasks, the dependency graph, and their logs.
+
+> Without a running server, Prefect uses a temporary local server for the run,
+> so the flow still runs, but it won't stay visible in the dashboard afterwards.
+
+---
+
 ## Models
 
 | Model | Type | Description |
